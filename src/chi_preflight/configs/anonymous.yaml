@@ -1,0 +1,8 @@
+# Anonymous submission settings
+anonymous: true          # true: no author info allowed; false: authors with ORCIDs required
+max_words: 12000          # null disables the limit; applies to LaTeX and Word
+
+latex:
+  document_class: acmart
+  required_options: [manuscript, review, anonymous]
+  forbidden_options: []

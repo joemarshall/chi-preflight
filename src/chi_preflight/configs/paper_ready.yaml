@@ -1,0 +1,8 @@
+# Paper-ready (camera-ready) settings
+anonymous: false          # true: no author info allowed; false: authors with ORCIDs required
+max_words: 12000          # null disables the limit; applies to LaTeX and Word
+
+latex:
+  document_class: acmart
+  required_options: [sigconf]
+  forbidden_options: [anonymous, review, manuscript]

@@ -1,0 +1,11 @@
+1) no metadata author names etc. in pdf
+2) no PDF comments with metadata names
+3) tex: word count (texcount) word count (word - python-docx?)
+    i) all bib entries have doi
+	ii) texcount low enough
+	iii) abstract length low enough
+	iv) orcid ids
+4) word: 
+    i) word count (python-docx)
+	ii) bib entries have doi (find bibliography section)
+	iii) orcid ids

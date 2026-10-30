@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chi-preflight"
+version = "0.1.0"
+description = "Preflight checks for LaTeX sources, Word documents and PDFs"
+requires-python = ">=3.9"
+dependencies = ["PyPDF2", "python-docx", "PyYAML", "print-color"]
+
+[project.scripts]
+chi-preflight = "chi_preflight.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+chi_preflight = ["configs/*.yaml"]
+
