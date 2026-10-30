@@ -16,7 +16,7 @@ requires-python = ">=3.9"
 dependencies = ["PyPDF2", "python-docx", "PyYAML", "print-color", "python-doi"]
 readme = "README.md"
 license = "MIT"
-license-files = ["LICENSE", 
+license-files = ["LICENSE"]
 
 [project.scripts]
 chi-preflight = "chi_preflight.main:main"

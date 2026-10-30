@@ -45,8 +45,8 @@ def is_online(etype, body):
     return etype == "misc" and bool(has_url) and not venue
 
 
-def check(folders, config):
-    out = []
+def cited_entries(folders):
+    """Return ({key: (type, body, bibfile)}, cited_keys, nocite_all) for the given folders."""
     alltext = "\n".join(strip_comments(read(f)) for f in tex_files(folders))
     cited, nocite_all = set(), False
     for m in re.finditer(r"\\(nocite|\w*cite\w*)(?:\[[^\]]*\])*\{([^}]+)\}", alltext):
@@ -61,6 +61,12 @@ def check(folders, config):
         for b in Path(folder).rglob("*.bib"):
             for key, (etype, body) in parse_bib(read(b)).items():
                 entries.setdefault(key, (etype, body, b))
+    return entries, cited, nocite_all
+
+
+def check(folders, config):
+    out = []
+    entries, cited, nocite_all = cited_entries(folders)
     if not entries:
         return out
     checked = 0

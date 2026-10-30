@@ -47,7 +47,7 @@ Output lines look like `[ERROR] [category] checker: location: message`, coloured
 | Category | LaTeX | Word | PDF |
 |---|---|---|---|
 | anonymity | `latex_authors` | `docx_authors` | `pdf_authors` |
-| references | `latex_references`, `latex_bib`, `latex_dois` | `docx_bibliography`, `docx_dois` | `pdf_dois` |
+| references | `latex_references`, `latex_bib`, `latex_dois`, `latex_doi_titles`, `latex_ref_links` | `docx_bibliography`, `docx_dois`, `docx_doi_titles`, `docx_ref_links` | `pdf_dois` |
 | structure | `latex_structure`, `latex_ccs` | `docx_structure` | `pdf_layout` |
 | style | `latex_style` | | |
 | length | `latex_wordcount`, `latex_abstract` | `docx_wordcount`, `docx_abstract` | |
@@ -76,6 +76,8 @@ Built-in configs live in [`src/chi_preflight/configs/`](src/chi_preflight/config
 | `bibliography_heading` | Heading of the Word bibliography section | `Bibliography` (built-ins: `References`) |
 | `bibliography_style` | Word paragraph style of reference entries (the bibliography ends at the first non-empty paragraph in another style); `null` accepts any | none (built-ins: `Bib_entry`) |
 | `validate_dois` | Resolve every DOI online; set `false` when offline | `true` |
+| `check_doi_titles` | Compare reference titles with the Crossref/DataCite record of their DOI; set `false` when offline | `true` |
+| `check_reference_links` | Check URLs / search titles for references without a DOI; set `false` when offline | `true` |
 | `latex.document_class` | Required LaTeX class, e.g. `acmart` | none |
 | `latex.required_options` / `latex.forbidden_options` | Class options, e.g. `[manuscript, review, anonymous]` | empty |
 | `banned_text` | Map of `"phrase": "error message"`; matched case- and whitespace-insensitively | empty |
