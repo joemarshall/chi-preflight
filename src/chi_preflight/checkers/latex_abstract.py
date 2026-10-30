@@ -29,7 +29,8 @@ def _count(text):
 
 def check(folders, config):
     limit = config.get("max_abstract_words")
-    if not limit:
+    minimum = config.get("min_abstract_words")
+    if not limit and not minimum:
         return []
     out = []
     found = False
@@ -37,9 +38,11 @@ def check(folders, config):
         for m in ABSTRACT_RE.finditer(strip_comments(read(f))):
             found = True
             n = _count(m.group(1))
-            out.append(Finding(Level.INFO, NAME, str(f), f"Abstract word count: {n} (maximum {limit})"))
-            if n > limit:
+            out.append(Finding(Level.INFO, NAME, str(f), f"Abstract word count: {n} (minimum {minimum or 0}, maximum {limit or 'none'})"))
+            if minimum and n < minimum:
+                out.append(Finding(Level.ERROR, NAME, str(f), f"Abstract has only {n} words, fewer than minimum of {minimum}"))
+            if limit and n > limit:
                 out.append(Finding(Level.ERROR, NAME, str(f), f"Abstract has {n} words, exceeding maximum of {limit}"))
     if not found:
-        out.append(Finding(Level.WARNING, NAME, str(folders[0]), r"No \begin{abstract} environment found"))
+        out.append(Finding(Level.ERROR, NAME, str(folders[0]), r"No \begin{abstract} environment found"))
     return out

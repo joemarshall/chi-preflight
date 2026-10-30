@@ -3,6 +3,8 @@ anonymous: true          # true: no author info allowed; false: authors with ORC
 bibliography_heading: References   # heading of the Word bibliography section (ACM uses "References")
 bibliography_style: Bib_entry      # Word paragraph style for reference entries; null accepts any style
 validate_dois: true             # resolve every DOI online via doi.org (needs network)
+abstract_style: Abstract          # Word paragraph style of the abstract; null falls back to finding an Abstract heading
+min_abstract_words: 10         # abstract must exist and have at least this many words; null/0 disables
 max_abstract_words: 150        # null disables; applies to LaTeX and Word abstracts
 max_words: 12000          # null disables the limit; applies to LaTeX and Word
 
