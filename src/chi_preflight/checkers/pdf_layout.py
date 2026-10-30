@@ -4,6 +4,7 @@ from ..findings import Finding, Level
 
 NAME = "pdf-layout"
 CATEGORY = "structure"
+LEVEL = "quick"
 
 
 def check(path, config):

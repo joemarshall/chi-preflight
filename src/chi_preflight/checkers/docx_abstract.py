@@ -6,6 +6,7 @@ from ..findings import Finding, Level
 
 NAME = "docx-abstract"
 CATEGORY = "length"
+LEVEL = "quick"
 ABSTRACT_RE = re.compile(r"(?:\d+\.?\s*)?abstract:?", re.I)
 # ends the abstract even when the template doesn't mark headings with a heading style
 SECTION_RE = re.compile(r"(?:\d+\.?\s*)?(?:keywords?|ccs concepts|acm reference format|introduction)(?:\s*:.*)?", re.I)

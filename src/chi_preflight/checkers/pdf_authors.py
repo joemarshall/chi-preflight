@@ -6,6 +6,7 @@ from ..findings import Finding, Level
 
 NAME = "pdf-authors"
 CATEGORY = "anonymity"
+LEVEL = "quick"
 ORCID_RE = re.compile(r"\b\d{4}-\d{4}-\d{4}-\d{3}[\dXx]\b")
 
 

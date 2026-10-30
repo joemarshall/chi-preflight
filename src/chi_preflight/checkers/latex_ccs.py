@@ -5,6 +5,7 @@ from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-ccs"
 CATEGORY = "structure"
+LEVEL = "quick"
 CCSDESC_RE = re.compile(r"\\ccsdesc(?:\[[^\]]*\])?\{([^}]*)\}")
 CCSXML_RE = re.compile(r"\\begin\{CCSXML\}(.*?)\\end\{CCSXML\}", re.S)
 

@@ -7,6 +7,7 @@ from .docx_bibliography import _is_heading, _link_targets
 
 NAME = "docx-doi-titles"
 CATEGORY = "references"
+LEVEL = "full"
 
 
 def check(path, config):

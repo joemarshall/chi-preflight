@@ -4,6 +4,7 @@ from ..findings import Finding, Level
 
 NAME = "docx-metadata"
 CATEGORY = "metadata"
+LEVEL = "quick"
 
 
 def check(path, config):

@@ -8,6 +8,7 @@ import re as _re
 
 NAME = "docx-ref-links"
 CATEGORY = "references"
+LEVEL = "full"
 URL_RE = re.compile(r"https?://[^\s<>\"]+", re.I)
 TITLE_RES = [
     re.compile(r"[\"\u201c]([^\"\u201d]{8,}?)[,.]?[\"\u201d]"),  # quoted title

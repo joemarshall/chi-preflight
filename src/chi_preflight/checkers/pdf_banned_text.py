@@ -5,6 +5,7 @@ from ._banned import find_banned
 
 NAME = "pdf-banned-text"
 CATEGORY = "content"
+LEVEL = "quick"
 
 
 def check(path, config):

@@ -6,6 +6,7 @@ from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-bib"
 CATEGORY = "references"
+LEVEL = "quick"
 SKIP_TYPES = {"string", "preamble", "comment"}
 
 

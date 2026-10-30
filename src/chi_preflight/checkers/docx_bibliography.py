@@ -6,6 +6,7 @@ from ..findings import Finding, Level
 
 NAME = "docx-bibliography"
 CATEGORY = "references"
+LEVEL = "quick"
 DOI_RE = re.compile(r"(?i)\b10\.\d{4,9}/\S+|doi\.org/|\bdoi\s*:")
 
 

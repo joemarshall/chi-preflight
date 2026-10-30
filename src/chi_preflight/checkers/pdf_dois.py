@@ -5,6 +5,7 @@ from . import _doi
 
 NAME = "pdf-dois"
 CATEGORY = "references"
+LEVEL = "normal"
 
 
 def check(path, config):

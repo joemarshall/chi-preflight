@@ -6,6 +6,7 @@ from .latex_bib import cited_entries, has_doi
 
 NAME = "latex-ref-links"
 CATEGORY = "references"
+LEVEL = "full"
 
 
 def _field(body, name):

@@ -4,6 +4,7 @@ from ..findings import Finding, Level
 
 NAME = "docx-structure"
 CATEGORY = "structure"
+LEVEL = "quick"
 
 
 def check(path, config):

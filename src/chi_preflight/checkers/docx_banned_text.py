@@ -5,6 +5,7 @@ from ._banned import find_banned
 
 NAME = "docx-banned-text"
 CATEGORY = "content"
+LEVEL = "quick"
 
 
 def _paragraphs(doc):

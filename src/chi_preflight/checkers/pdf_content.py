@@ -6,6 +6,7 @@ from ..findings import Finding, Level
 
 NAME = "pdf-content"
 CATEGORY = "content"
+LEVEL = "quick"
 
 
 def check(path, config):

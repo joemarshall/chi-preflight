@@ -4,6 +4,7 @@ from .latex_ref_links import _clean_title, _field
 
 NAME = "latex-doi-titles"
 CATEGORY = "references"
+LEVEL = "full"
 
 
 def check(folders, config):

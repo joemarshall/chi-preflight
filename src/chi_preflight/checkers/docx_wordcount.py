@@ -6,6 +6,7 @@ from ..findings import Finding, Level
 
 NAME = "docx-wordcount"
 CATEGORY = "length"
+LEVEL = "quick"
 LABEL_RE = re.compile(r"(?:figure|fig\.|table|listing|algorithm|equation)\s*\d+", re.I)
 
 

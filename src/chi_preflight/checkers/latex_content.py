@@ -5,6 +5,7 @@ from ._latex_util import read, tex_files
 
 NAME = "latex-content"
 CATEGORY = "content"
+LEVEL = "quick"
 
 
 def check(folders, config):

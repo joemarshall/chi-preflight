@@ -9,6 +9,7 @@ from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-wordcount"
 CATEGORY = "length"
+LEVEL = "quick"
 
 INPUT_RE = re.compile(r"\\(?:input|include)\s*\{([^}]+)\}")
 # Counting stops at the first appendix or bibliography marker

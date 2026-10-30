@@ -13,6 +13,7 @@ from .findings import Finding, Level
 
 COLORS = {Level.ERROR: "red", Level.WARNING: "yellow", Level.INFO: "green"}
 
+LEVELS = ["quick", "normal", "full"]
 LATEX = [latex_ccs, latex_abstract, latex_banned_text, latex_authors, latex_structure, latex_style, latex_references, latex_bib, latex_content, latex_dois, latex_doi_titles, latex_ref_links, latex_wordcount]
 DOCX = [docx_abstract, docx_banned_text, docx_authors, docx_metadata, docx_structure, docx_content, docx_bibliography, docx_dois, docx_doi_titles, docx_ref_links, docx_wordcount]
 PDF = [pdf_dois, pdf_banned_text, pdf_authors, pdf_metadata, pdf_layout, pdf_content]
@@ -41,6 +42,9 @@ def main(argv=None):
     ap.add_argument("--config", "-c", default="anonymous", metavar="NAME|FILE",
                     help="built-in config (%s) or path to a YAML file (default: anonymous)"
                     % ", ".join(cfgmod.builtin_names()))
+    ap.add_argument("--level", "-L", choices=LEVELS, default="normal",
+                    help="quick: offline checks only; normal (default): also validate DOIs online; "
+                         "full: also check reference titles and links online")
     ap.add_argument("--format", "-f", choices=["text", "csv"], default="text",
                     help="output format for the report: text (default) or csv")
     ap.add_argument("--output", "-o", metavar="FILE",
@@ -55,6 +59,9 @@ def main(argv=None):
     except (FileNotFoundError, ValueError) as e:
         ap.error(str(e))
 
+    def selected(mods):
+        return [m for m in mods if LEVELS.index(m.LEVEL) <= LEVELS.index(args.level)]
+
     findings = []
     jobs = []
     if args.latex:
@@ -63,14 +70,14 @@ def main(argv=None):
             findings.append(Finding(Level.ERROR, "input", d, "Not a directory", "input"))
         folders = [d for d in args.latex if d not in missing]
         if folders:
-            jobs.append((LATEX, folders))
+            jobs.append((selected(LATEX), folders))
     for path, checkers in ((args.docx, DOCX), (args.pdf, PDF)):
         if not path:
             continue
         if not Path(path).is_file():
             findings.append(Finding(Level.ERROR, "input", path, "File not found", "input"))
         else:
-            jobs.append((checkers, path))
+            jobs.append((selected(checkers), path))
     with tqdm(total=sum(len(c) for c, _ in jobs), file=sys.stderr, unit="check", leave=False) as bar:
         for checkers, target in jobs:
             run(checkers, target, findings, config, bar)

@@ -6,6 +6,7 @@ from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-references"
 CATEGORY = "references"
+LEVEL = "quick"
 
 
 def check(folders, config):

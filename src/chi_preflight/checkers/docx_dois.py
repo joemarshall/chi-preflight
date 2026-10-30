@@ -6,6 +6,7 @@ from .docx_banned_text import _paragraphs
 
 NAME = "docx-dois"
 CATEGORY = "references"
+LEVEL = "normal"
 
 
 def check(path, config):

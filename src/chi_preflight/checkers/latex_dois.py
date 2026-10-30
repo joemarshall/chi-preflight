@@ -5,6 +5,7 @@ from pathlib import Path
 
 NAME = "latex-dois"
 CATEGORY = "references"
+LEVEL = "normal"
 
 
 def check(folders, config):

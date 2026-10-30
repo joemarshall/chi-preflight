@@ -9,6 +9,7 @@ from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-abstract"
 CATEGORY = "length"
+LEVEL = "quick"
 ABSTRACT_RE = re.compile(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", re.S)
 
 

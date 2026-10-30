@@ -5,6 +5,7 @@ from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-authors"
 CATEGORY = "anonymity"
+LEVEL = "quick"
 
 
 def _arg(text, start):
