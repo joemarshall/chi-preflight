@@ -8,6 +8,7 @@ from urllib.parse import quote_plus
 import requests
 
 from ..findings import Finding, Level
+from ._progress import bar
 
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                          "(KHTML, like Gecko) Chrome/120.0 Safari/537.36",
@@ -47,7 +48,12 @@ def check_url(url):
 def check_urls(urls):
     urls = list(urls)
     with ThreadPoolExecutor(max_workers=8) as pool:
-        return dict(zip(urls, pool.map(check_url, urls)))
+        with bar(len(urls), "Checking URLs") as pb:
+            results = []
+            for r in pool.map(check_url, urls):
+                results.append(r)
+                pb.update(1)
+        return dict(zip(urls, results))
 
 
 def _norm(text):
@@ -107,6 +113,7 @@ def findings(refs, config, name, category):
     urls = check_urls({r["url"] for r in refs if r["url"]})
     blocked = 0
     n_url = n_search = 0
+    pb = bar(sum(1 for r in refs if not r["url"] and r["title"]), "Searching titles of references missing a DOI")
     for r in refs:
         if r["url"]:
             n_url += 1
@@ -120,10 +127,12 @@ def findings(refs, config, name, category):
         else:
             n_search += 1
             res = search_title(r["title"])
+            pb.update(1)
             if res == "notfound":
                 out.append(Finding(Level.WARNING, name, r["location"], f'No DOI or URL, and exact title not found on the web: "{r["title"]}" ({r["label"]})', category))
             elif res == "unknown":
                 blocked += 1
+    pb.close()
     if blocked:
         out.append(Finding(Level.WARNING, name, "-", f"Web search was blocked or unavailable; {blocked} title(s) could not be checked", category))
     out.append(Finding(Level.INFO, name, "-", f"Checked {n_url} URL(s) and searched for {n_search} title(s) for references without a DOI", category))

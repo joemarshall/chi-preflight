@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 from print_color import print as cprint
+from tqdm import tqdm
 
 from . import config as cfgmod
 from .checkers import (latex_doi_titles, docx_doi_titles, latex_ref_links, docx_ref_links, latex_ccs, docx_abstract, latex_abstract, docx_dois, latex_dois, pdf_dois, docx_banned_text, latex_banned_text, pdf_banned_text, docx_authors, latex_authors, pdf_authors, latex_style, docx_wordcount, docx_bibliography, latex_bib, docx_content, docx_metadata, docx_structure, latex_content,
@@ -17,8 +18,9 @@ DOCX = [docx_abstract, docx_banned_text, docx_authors, docx_metadata, docx_struc
 PDF = [pdf_dois, pdf_banned_text, pdf_authors, pdf_metadata, pdf_layout, pdf_content]
 
 
-def run(checkers, target, findings, config):
+def run(checkers, target, findings, config, bar):
     for mod in checkers:
+        bar.set_description(f"Running {mod.NAME}")
         try:
             new = mod.check(target, config)
             for f in new:
@@ -26,6 +28,9 @@ def run(checkers, target, findings, config):
             findings.extend(new)
         except Exception as e:  # a failing checker must not stop the others
             findings.append(Finding(Level.ERROR, mod.NAME, str(target), f"Checker crashed: {e!r}", mod.CATEGORY))
+        bar.set_postfix(errors=sum(f.level == Level.ERROR for f in findings),
+                        warnings=sum(f.level == Level.WARNING for f in findings))
+        bar.update(1)
 
 
 def main(argv=None):
@@ -51,20 +56,24 @@ def main(argv=None):
         ap.error(str(e))
 
     findings = []
+    jobs = []
     if args.latex:
         missing = [d for d in args.latex if not Path(d).is_dir()]
         for d in missing:
             findings.append(Finding(Level.ERROR, "input", d, "Not a directory", "input"))
         folders = [d for d in args.latex if d not in missing]
         if folders:
-            run(LATEX, folders, findings, config)
+            jobs.append((LATEX, folders))
     for path, checkers in ((args.docx, DOCX), (args.pdf, PDF)):
         if not path:
             continue
         if not Path(path).is_file():
             findings.append(Finding(Level.ERROR, "input", path, "File not found", "input"))
         else:
-            run(checkers, path, findings, config)
+            jobs.append((checkers, path))
+    with tqdm(total=sum(len(c) for c, _ in jobs), file=sys.stderr, unit="check", leave=False) as bar:
+        for checkers, target in jobs:
+            run(checkers, target, findings, config, bar)
 
     findings.sort(key=lambda f: (-f.level, f.category))
     counts = {l: sum(f.level == l for f in findings) for l in Level}

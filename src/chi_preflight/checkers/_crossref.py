@@ -9,6 +9,7 @@ from urllib.parse import quote
 import requests
 
 from ..findings import Finding, Level
+from ._progress import bar
 
 HEADERS = {"User-Agent": "chi-preflight (title check; https://github.com/)"}
 _cache = {}
@@ -66,7 +67,12 @@ def crossref_title(doi):
 def lookup_all(dois):
     dois = list(dois)
     with ThreadPoolExecutor(max_workers=6) as pool:
-        return dict(zip(dois, pool.map(crossref_title, dois)))
+        with bar(len(dois), "Checking DOI titles") as pb:
+            results = []
+            for r in pool.map(crossref_title, dois):
+                results.append(r)
+                pb.update(1)
+        return dict(zip(dois, results))
 
 
 def title_similarity(given, official):

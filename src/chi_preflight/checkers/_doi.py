@@ -6,6 +6,8 @@ from urllib.parse import quote, unquote
 
 import doi as pydoi
 
+from ._progress import bar
+
 DOI_RE = re.compile(r"\b10\.\d{4,9}/[^\s\"<>{}|^`\\]+", re.I)
 _cache = {}
 
@@ -38,8 +40,10 @@ def validate_all(dois):
     if todo:
         socket.setdefaulttimeout(20)
         with ThreadPoolExecutor(max_workers=8) as pool:
-            for d, res in zip(todo, pool.map(_validate_one, todo)):
-                _cache[d] = res
+            with bar(len(todo), "Validating DOIs") as pb:
+                for d, res in zip(todo, pool.map(_validate_one, todo)):
+                    _cache[d] = res
+                    pb.update(1)
     return {d: _cache[d] for d in dois}
 
 

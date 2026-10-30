@@ -40,7 +40,7 @@ chi-preflight -c camera_ready --latex paper/
 chi-preflight -c my_config.yaml --pdf paper.pdf
 ```
 
-Output lines look like `[ERROR] [category] checker: location: message`, coloured red (error), yellow (warning) and green (info), sorted by severity then category. A saved CSV report has the columns `level, category, checker, location, message` (UTF-8 with BOM so Excel opens it correctly). The exit code is `1` if there are any errors, otherwise `0`.
+A progress bar naming the running check is shown on stderr (so it never mixes with `-f csv` output). Output lines look like `[ERROR] [category] checker: location: message`, coloured red (error), yellow (warning) and green (info), sorted by severity then category. A saved CSV report has the columns `level, category, checker, location, message` (UTF-8 with BOM so Excel opens it correctly). The exit code is `1` if there are any errors, otherwise `0`.
 
 ## Checks
 
