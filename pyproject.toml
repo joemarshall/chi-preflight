@@ -13,7 +13,7 @@ maintainers = [
 ]
 description = "Preflight checks for ACM SIGCHI conferences of LaTeX sources, Word documents and PDFs"
 requires-python = ">=3.9"
-dependencies = ["PyPDF2", "python-docx", "PyYAML", "print-color", "python-doi"]
+dependencies = ["PyPDF2", "python-docx", "PyYAML", "print-color", "python-doi","requests"]
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
