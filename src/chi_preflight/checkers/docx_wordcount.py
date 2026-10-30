@@ -6,7 +6,6 @@ from ..findings import Finding, Level
 
 NAME = "docx-wordcount"
 CATEGORY = "length"
-END_RE = re.compile(r"(?:\d+\.?\s*|[A-Z]\.?\s+)?(?:bibliography|references|appendix|appendices)\b.*", re.I)
 LABEL_RE = re.compile(r"(?:figure|fig\.|table|listing|algorithm|equation)\s*\d+", re.I)
 
 
@@ -22,13 +21,15 @@ def check(path, config):
     # doc.paragraphs covers body paragraphs only: table cells, headers and footers are excluded
     doc = Document(path)
     words = skipped_caps = skipped_tail = 0
+    # counting stops at the configured bibliography heading or any appendix heading
+    end_re = re.compile(r"(?:\d+\.?\s*|[A-Z]\.?\s+)?(?:%s|appendix|appendices)\b.*" % re.escape(config["bibliography_heading"]), re.I)
     in_tail = False
     for p in doc.paragraphs:
         text = p.text.strip()
         if not text:
             continue
         # counting stops for good at the first appendix/bibliography heading
-        if _is_heading(p) and END_RE.fullmatch(text):
+        if _is_heading(p) and end_re.fullmatch(text):
             in_tail = True
         if in_tail:
             skipped_tail += 1

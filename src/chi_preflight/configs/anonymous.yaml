@@ -1,8 +1,16 @@
 # Anonymous submission settings
 anonymous: true          # true: no author info allowed; false: authors with ORCIDs required
+bibliography_heading: References   # heading of the Word bibliography section (ACM uses "References")
+bibliography_style: Bib_entry      # Word paragraph style for reference entries; null accepts any style
 max_words: 12000          # null disables the limit; applies to LaTeX and Word
 
 latex:
   document_class: acmart
   required_options: [manuscript, review, anonymous]
   forbidden_options: []
+
+# Phrases that must not appear in any file (matched case- and whitespace-insensitively).
+# Format: "text to find": "error message shown"
+banned_text:
+  "Insert your first CCS term here": "CCS concept placeholder still in file"
+  "Insert comma delimited author-supplied keyword list": "Author keywords need to be added to file"
