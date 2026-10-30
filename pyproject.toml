@@ -5,9 +5,18 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "chi-preflight"
 version = "0.1.0"
-description = "Preflight checks for LaTeX sources, Word documents and PDFs"
+authors = [
+  {name = "Joe Marshall", email = "joe.marshall@nottingham.ac.uk"}
+]
+maintainers = [
+  {name = "Joe Marshall", email = "joe.marshall@nottingham.ac.uk"}
+]
+description = "Preflight checks for ACM SIGCHI conferences of LaTeX sources, Word documents and PDFs"
 requires-python = ">=3.9"
 dependencies = ["PyPDF2", "python-docx", "PyYAML", "print-color", "python-doi"]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", 
 
 [project.scripts]
 chi-preflight = "chi_preflight.main:main"
