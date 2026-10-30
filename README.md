@@ -4,7 +4,11 @@ Preflight checks for CHI-style (ACM) submissions. Runs a set of checkers over yo
 
 ## Install
 
-Requires Python 3.9+. On non-windows systems, you need perl installed. On Windows it auto-downloads perl on first run. 
+Requires Python 3.9+. On non-windows systems, you need perl installed. On Windows it auto-downloads a perl interpreter on first run. 
+
+# Usage:
+
+clone the repository, install with pip
 
 ```
 pip install -e .
@@ -16,6 +20,7 @@ This installs the `chi-preflight` command and the dependencies: `PyPDF2`, `pytho
 
 ```
 chi-preflight [--config NAME|FILE] [--latex DIR [DIR ...]] [--docx FILE.docx] [--pdf FILE.pdf]
+                [--format text|csv] [--output FILE]
 ```
 
 | Option | Description |
@@ -24,6 +29,8 @@ chi-preflight [--config NAME|FILE] [--latex DIR [DIR ...]] [--docx FILE.docx] [-
 | `-w`, `--docx` | Word document |
 | `-p`, `--pdf` | PDF file |
 | `-c`, `--config` | Built-in config name (`anonymous`, `camera_ready`) or a path to a YAML file. Default: `anonymous` |
+| `-f`, `--format` | Output format for the whole report: `text` (default) or `csv`. CSV mode prints only CSV to the terminal |
+| `-o`, `--output` | Also write the report to this file, in the chosen format. Nothing is written to a file unless this is given |
 
 At least one of `--latex`, `--docx`, `--pdf` is required. Examples:
 
@@ -33,7 +40,7 @@ chi-preflight -c camera_ready --latex paper/
 chi-preflight -c my_config.yaml --pdf paper.pdf
 ```
 
-Output lines look like `[ERROR] [category] checker: location: message`, coloured red (error), yellow (warning) and green (info), sorted by severity then category. The exit code is `1` if there are any errors, otherwise `0`.
+Output lines look like `[ERROR] [category] checker: location: message`, coloured red (error), yellow (warning) and green (info), sorted by severity then category. A saved CSV report has the columns `level, category, checker, location, message` (UTF-8 with BOM so Excel opens it correctly). The exit code is `1` if there are any errors, otherwise `0`.
 
 ## Checks
 
@@ -93,3 +100,4 @@ LaTeX word counts use [texcount](https://app.uio.no/ifi/texcount/). On first use
 ## Adding a checker
 
 Each checker is a module in [`src/chi_preflight/checkers/`](src/chi_preflight/checkers) with `NAME`, `CATEGORY` and `check(target, config)` returning a list of `Finding` objects (`Level.ERROR`, `WARNING` or `INFO`). `target` is a list of folders for LaTeX checkers and a file path for Word/PDF checkers. Register the module in the `LATEX`, `DOCX` or `PDF` list in [`main.py`](src/chi_preflight/main.py). A checker that raises is reported as an error and doesn't stop the others.
+

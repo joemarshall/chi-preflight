@@ -1,4 +1,5 @@
 import argparse
+import csv
 import sys
 from pathlib import Path
 
@@ -35,6 +36,11 @@ def main(argv=None):
     ap.add_argument("--config", "-c", default="anonymous", metavar="NAME|FILE",
                     help="built-in config (%s) or path to a YAML file (default: anonymous)"
                     % ", ".join(cfgmod.builtin_names()))
+    ap.add_argument("--format", "-f", choices=["text", "csv"], default="text",
+                    help="output format for the report: text (default) or csv")
+    ap.add_argument("--output", "-o", metavar="FILE",
+                    help="also save the report to this file, in the chosen format "
+                         "(csv format defaults to chi-preflight-report.csv)")
     args = ap.parse_args(argv)
     if not (args.latex or args.docx or args.pdf):
         ap.error("provide at least one of --latex, --docx, --pdf")
@@ -61,16 +67,40 @@ def main(argv=None):
             run(checkers, path, findings, config)
 
     findings.sort(key=lambda f: (-f.level, f.category))
-    print("=== chi-preflight report ===")
-    for f in findings:
-        cprint(f, color=COLORS[f.level])
     counts = {l: sum(f.level == l for f in findings) for l in Level}
-    print(f"\n{counts[Level.ERROR]} error(s), {counts[Level.WARNING]} warning(s), {counts[Level.INFO]} info")
+    summary = (f"{counts[Level.ERROR]} error(s), {counts[Level.WARNING]} warning(s), "
+               f"{counts[Level.INFO]} info")
+
+    def write_csv(fh):
+        w = csv.writer(fh)
+        w.writerow(["level", "category", "checker", "location", "message"])
+        for f in findings:
+            w.writerow([f.level.name, f.category, f.checker, f.target, f.message])
+
+    if args.format == "csv":
+        write_csv(sys.stdout)
+    else:
+        print("=== chi-preflight report ===")
+        for f in findings:
+            cprint(f, color=COLORS[f.level])
+        print(f"\n{summary}")
+
+    if args.output:
+        if args.format == "csv":
+            with open(args.output, "w", newline="", encoding="utf-8-sig") as fh:
+                write_csv(fh)
+        else:
+            with open(args.output, "w", encoding="utf-8") as fh:
+                fh.write("=== chi-preflight report ===\n")
+                fh.writelines(f"{f}\n" for f in findings)
+                fh.write(f"\n{summary}\n")
+        print(f"Report saved to {args.output}", file=sys.stderr)
     return 1 if counts[Level.ERROR] else 0
 
 
 if __name__ == "__main__":
     sys.exit(main())
+
 
 
 

@@ -14,3 +14,5 @@ env/
 htmlcov/
 .vscode/
 .idea/
+# test outputs
+*.csv
