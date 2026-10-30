@@ -5,14 +5,14 @@ from pathlib import Path
 from print_color import print as cprint
 
 from . import config as cfgmod
-from .checkers import (docx_dois, latex_dois, pdf_dois, docx_banned_text, latex_banned_text, pdf_banned_text, docx_authors, latex_authors, pdf_authors, latex_style, docx_wordcount, docx_bibliography, latex_bib, docx_content, docx_metadata, docx_structure, latex_content,
+from .checkers import (docx_abstract, latex_abstract, docx_dois, latex_dois, pdf_dois, docx_banned_text, latex_banned_text, pdf_banned_text, docx_authors, latex_authors, pdf_authors, latex_style, docx_wordcount, docx_bibliography, latex_bib, docx_content, docx_metadata, docx_structure, latex_content,
                        latex_references, latex_structure, latex_wordcount, pdf_content, pdf_layout, pdf_metadata)
 from .findings import Finding, Level
 
 COLORS = {Level.ERROR: "red", Level.WARNING: "yellow", Level.INFO: "green"}
 
-LATEX = [latex_banned_text, latex_authors, latex_structure, latex_style, latex_references, latex_bib, latex_content, latex_dois, latex_wordcount]
-DOCX = [docx_banned_text, docx_authors, docx_metadata, docx_structure, docx_content, docx_bibliography, docx_dois, docx_wordcount]
+LATEX = [latex_abstract, latex_banned_text, latex_authors, latex_structure, latex_style, latex_references, latex_bib, latex_content, latex_dois, latex_wordcount]
+DOCX = [docx_abstract, docx_banned_text, docx_authors, docx_metadata, docx_structure, docx_content, docx_bibliography, docx_dois, docx_wordcount]
 PDF = [pdf_dois, pdf_banned_text, pdf_authors, pdf_metadata, pdf_layout, pdf_content]
 
 

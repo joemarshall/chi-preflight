@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 
 BUILTIN = Path(__file__).parent / "configs"
-DEFAULTS = {"anonymous": True, "max_words": None, "bibliography_heading": "Bibliography", "bibliography_style": None, "banned_text": {}, "validate_dois": True, "latex": {"document_class": None, "required_options": [], "forbidden_options": []}}
+DEFAULTS = {"anonymous": True, "max_words": None, "bibliography_heading": "Bibliography", "bibliography_style": None, "banned_text": {}, "validate_dois": True, "max_abstract_words": None, "latex": {"document_class": None, "required_options": [], "forbidden_options": []}}
 
 
 def builtin_names():
