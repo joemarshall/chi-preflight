@@ -11,7 +11,7 @@ def builtin_names():
 
 
 def load(spec):
-    """spec is a built-in name (e.g. 'anonymous', 'paper-ready') or a path to a YAML file."""
+    """spec is a built-in name (e.g. 'anonymous', 'camera-ready') or a path to a YAML file."""
     path = Path(spec)
     if not path.is_file():
         path = BUILTIN / (spec.replace("-", "_") + ".yaml")
@@ -21,3 +21,4 @@ def load(spec):
     cfg = {**DEFAULTS, **data}
     cfg["latex"] = {**DEFAULTS["latex"], **(data.get("latex") or {})}
     return cfg
+

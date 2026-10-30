@@ -14,6 +14,7 @@ class Finding:
     checker: str
     target: str
     message: str
+    category: str = "general"
 
     def __str__(self):
-        return f"[{self.level.name}] {self.checker}: {self.target}: {self.message}"
+        return f"[{self.level.name}] [{self.category}] {self.checker}: {self.target}: {self.message}"

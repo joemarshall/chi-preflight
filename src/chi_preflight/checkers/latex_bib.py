@@ -5,6 +5,7 @@ from ..findings import Finding, Level
 from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-bib"
+CATEGORY = "references"
 SKIP_TYPES = {"string", "preamble", "comment"}
 
 
@@ -32,6 +33,18 @@ def has_doi(body):
     return bool(re.search(r"(?i)\burl\s*=\s*[{\"][^}\"]*doi\.org/", body))
 
 
+ONLINE_TYPES = {"online", "electronic", "www", "webpage"}
+
+
+def is_online(etype, body):
+    if etype in ONLINE_TYPES:
+        return True
+    # a @misc with a URL (or \url in howpublished) and no journal/book venue
+    has_url = re.search(r"(?i)(?:\burl\s*=|howpublished\s*=\s*[{\"]?\s*\\url)", body)
+    venue = re.search(r"(?i)\b(?:journal|booktitle|publisher)\s*=", body)
+    return etype == "misc" and bool(has_url) and not venue
+
+
 def check(folders, config):
     out = []
     alltext = "\n".join(strip_comments(read(f)) for f in tex_files(folders))
@@ -54,7 +67,7 @@ def check(folders, config):
     for key, (etype, body, b) in sorted(entries.items()):
         if key in cited or nocite_all:
             checked += 1
-            if not has_doi(body):
+            if not has_doi(body) and not is_online(etype, body):
                 out.append(Finding(Level.WARNING, NAME, str(b), f"Cited entry '{key}' ({etype}) has no DOI"))
     out.append(Finding(Level.INFO, NAME, str(folders[0]), f"Checked DOIs for {checked} cited bib entr{'y' if checked == 1 else 'ies'}"))
     return out

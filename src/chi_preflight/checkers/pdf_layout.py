@@ -3,6 +3,7 @@ from PyPDF2 import PdfReader
 from ..findings import Finding, Level
 
 NAME = "pdf-layout"
+CATEGORY = "structure"
 
 
 def check(path, config):

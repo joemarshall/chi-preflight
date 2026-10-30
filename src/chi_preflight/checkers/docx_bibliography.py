@@ -5,7 +5,11 @@ from docx import Document
 from ..findings import Finding, Level
 
 NAME = "docx-bibliography"
+CATEGORY = "references"
 DOI_RE = re.compile(r"(?i)\b10\.\d{4,9}/\S+|doi\.org/|\bdoi\s*:")
+
+
+ONLINE_RE = re.compile(r"(?i)https?://|www\.|\b(?:retrieved|accessed)\b")
 
 
 def _is_heading(p):
@@ -26,7 +30,7 @@ def check(path, config):
     if start is None:
         return [Finding(Level.ERROR, NAME, path, 'No "Bibliography" section found')]
     out = []
-    count = 0
+    count = online = 0
     for p in paras[start + 1:]:
         if _is_heading(p):
             break
@@ -34,11 +38,16 @@ def check(path, config):
         if not text:
             continue
         count += 1
-        if not DOI_RE.search(text + " " + _link_targets(p)):
+        links = _link_targets(p)
+        if DOI_RE.search(text + " " + links):
+            continue
+        if ONLINE_RE.search(text + " " + links):
+            online += 1
+        else:
             out.append(Finding(Level.WARNING, NAME, path, f"Reference has no DOI: {text}"))
     if count == 0:
         out.append(Finding(Level.WARNING, NAME, path, "Bibliography section is empty"))
     else:
-        out.append(Finding(Level.INFO, NAME, path, f"Checked DOIs for {count} reference entr{'y' if count == 1 else 'ies'}"))
+        out.append(Finding(Level.INFO, NAME, path, f"Checked DOIs for {count} reference entr{'y' if count == 1 else 'ies'} ({online} online, DOI not required)"))
     return out
 

@@ -4,6 +4,7 @@ from ..findings import Finding, Level
 from ._latex_util import read, tex_files
 
 NAME = "latex-content"
+CATEGORY = "content"
 
 
 def check(folders, config):

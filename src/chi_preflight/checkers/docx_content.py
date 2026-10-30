@@ -5,6 +5,7 @@ from docx import Document
 from ..findings import Finding, Level
 
 NAME = "docx-content"
+CATEGORY = "content"
 
 
 def check(path, config):

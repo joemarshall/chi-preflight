@@ -5,7 +5,8 @@ from docx import Document
 from ..findings import Finding, Level
 
 NAME = "docx-wordcount"
-BIB_RE = re.compile(r"(?:\d+\.?\s*)?bibliography:?|(?:\d+\.?\s*)?references:?", re.I)
+CATEGORY = "length"
+END_RE = re.compile(r"(?:\d+\.?\s*|[A-Z]\.?\s+)?(?:bibliography|references|appendix|appendices)\b.*", re.I)
 LABEL_RE = re.compile(r"(?:figure|fig\.|table|listing|algorithm|equation)\s*\d+", re.I)
 
 
@@ -20,26 +21,23 @@ def _is_label(p):
 def check(path, config):
     # doc.paragraphs covers body paragraphs only: table cells, headers and footers are excluded
     doc = Document(path)
-    words = skipped_caps = skipped_bib = 0
-    in_bib = False
+    words = skipped_caps = skipped_tail = 0
+    in_tail = False
     for p in doc.paragraphs:
         text = p.text.strip()
         if not text:
             continue
-        if BIB_RE.fullmatch(text) and _is_heading(p):
-            in_bib = True
-            continue
-        if in_bib and _is_heading(p):
-            in_bib = False
-        n = len(text.split())
-        if in_bib:
-            skipped_bib += 1
+        # counting stops for good at the first appendix/bibliography heading
+        if _is_heading(p) and END_RE.fullmatch(text):
+            in_tail = True
+        if in_tail:
+            skipped_tail += 1
         elif _is_label(p):
             skipped_caps += 1
         else:
-            words += n
+            words += len(text.split())
     out = [Finding(Level.INFO, NAME, path,
-                   f"Word count: {words} (excluding bibliography [{skipped_bib} entries], "
+                   f"Word count: {words} (excluding appendices and bibliography [{skipped_tail} paragraphs], "
                    f"captions/labels [{skipped_caps}], tables, headers and footers)")]
     limit = config.get("max_words")
     if limit and words > limit:

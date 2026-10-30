@@ -4,6 +4,7 @@ from ..findings import Finding, Level
 from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-authors"
+CATEGORY = "anonymity"
 
 
 def _arg(text, start):
@@ -27,13 +28,14 @@ def _commands(text, name):
 def check(folders, config):
     anon = config.get("anonymous", True)
     out = []
-    for f in tex_files(folders):
-        t = strip_comments(read(f))
-        if r"\documentclass" not in t:
-            continue
+    texts = {f: strip_comments(read(f)) for f in tex_files(folders)}
+    # \input'd files (e.g. Authors.tex) have no \documentclass, so scan every file
+    class_anon = any(re.search(r"\\documentclass\s*\[[^\]]*\banonymous\b", t) for t in texts.values())
+    n_authors = 0
+    for f, t in texts.items():
         authors = [(pos, a) for pos, a in _commands(t, "author") if a.strip()]
         orcids = [pos for pos, a in _commands(t, "orcid") if a.strip()]
-        class_anon = bool(re.search(r"\\documentclass\s*\[[^\]]*\banonymous\b", t))
+        n_authors += len(authors)
         if anon:
             # With acmart's 'anonymous' option the source still holds names but they are not typeset
             lvl = Level.WARNING if class_anon else Level.ERROR
@@ -43,19 +45,25 @@ def check(folders, config):
             for cmd in ("affiliation", "email", "orcid", "thanks"):
                 for _, a in _commands(t, cmd):
                     if a.strip():
-                        out.append(Finding(lvl, NAME, str(f), f"Identifying \\{cmd} present: {' '.join(a.split())[:60]}{suffix}"))
+                        # emails are always an error, even if the class hides them in the output
+                        out.append(Finding(Level.ERROR if cmd == "email" else lvl, NAME, str(f), f"Identifying \\{cmd} present: {' '.join(a.split())[:60]}{suffix}"))
             if re.search(r"\\begin\{acks\}|\\section\*?\{Acknowledg", t):
                 out.append(Finding(Level.WARNING, NAME, str(f), "Acknowledgements section present (may identify authors)"))
+            email_args = {a.strip() for _, a in _commands(t, "email")}
+            for e in sorted(set(re.findall(r"[\w.+-]+@[\w-]+\.[\w.-]+", t))):
+                if not any(e in a for a in email_args):
+                    out.append(Finding(Level.ERROR, NAME, str(f), f"Email address in source: {e}"))
             m = re.search(r"pdfauthor\s*=\s*\{?([^,}]+)", t)
             if m:
                 out.append(Finding(Level.ERROR, NAME, str(f), f"hyperref pdfauthor set: {m.group(1).strip()}"))
         else:
-            if not authors:
-                out.append(Finding(Level.ERROR, NAME, str(f), r"No \author information found"))
-                continue
             bounds = [p for p, _ in authors] + [len(t)]
             for i, (pos, a) in enumerate(authors):
                 if not any(pos < o < bounds[i + 1] for o in orcids):
                     out.append(Finding(Level.WARNING, NAME, str(f), f"Author has no \\orcid: {' '.join(a.split())[:60]}"))
-            out.append(Finding(Level.INFO, NAME, str(f), f"{len(authors)} author(s) found"))
+    if not anon:
+        if not n_authors:
+            out.append(Finding(Level.ERROR, NAME, str(folders[0]), r"No \author information found"))
+        else:
+            out.append(Finding(Level.INFO, NAME, str(folders[0]), f"{n_authors} author(s) found"))
     return out

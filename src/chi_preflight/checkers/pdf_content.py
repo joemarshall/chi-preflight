@@ -5,6 +5,7 @@ from PyPDF2 import PdfReader
 from ..findings import Finding, Level
 
 NAME = "pdf-content"
+CATEGORY = "content"
 
 
 def check(path, config):

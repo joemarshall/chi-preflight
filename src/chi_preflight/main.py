@@ -19,9 +19,12 @@ PDF = [pdf_authors, pdf_metadata, pdf_layout, pdf_content]
 def run(checkers, target, findings, config):
     for mod in checkers:
         try:
-            findings.extend(mod.check(target, config))
+            new = mod.check(target, config)
+            for f in new:
+                f.category = mod.CATEGORY
+            findings.extend(new)
         except Exception as e:  # a failing checker must not stop the others
-            findings.append(Finding(Level.ERROR, mod.NAME, str(target), f"Checker crashed: {e!r}"))
+            findings.append(Finding(Level.ERROR, mod.NAME, str(target), f"Checker crashed: {e!r}", mod.CATEGORY))
 
 
 def main(argv=None):
@@ -45,7 +48,7 @@ def main(argv=None):
     if args.latex:
         missing = [d for d in args.latex if not Path(d).is_dir()]
         for d in missing:
-            findings.append(Finding(Level.ERROR, "input", d, "Not a directory"))
+            findings.append(Finding(Level.ERROR, "input", d, "Not a directory", "input"))
         folders = [d for d in args.latex if d not in missing]
         if folders:
             run(LATEX, folders, findings, config)
@@ -53,11 +56,11 @@ def main(argv=None):
         if not path:
             continue
         if not Path(path).is_file():
-            findings.append(Finding(Level.ERROR, "input", path, "File not found"))
+            findings.append(Finding(Level.ERROR, "input", path, "File not found", "input"))
         else:
             run(checkers, path, findings, config)
 
-    findings.sort(key=lambda f: -f.level)
+    findings.sort(key=lambda f: (-f.level, f.category))
     print("=== chi-preflight report ===")
     for f in findings:
         cprint(f, color=COLORS[f.level])

@@ -6,6 +6,7 @@ from docx import Document
 from ..findings import Finding, Level
 
 NAME = "docx-authors"
+CATEGORY = "anonymity"
 ORCID_RE = re.compile(r"\b\d{4}-\d{4}-\d{4}-\d{3}[\dXx]\b")
 
 

@@ -5,6 +5,7 @@ from ..findings import Finding, Level
 from ._latex_util import read, strip_comments, tex_files
 
 NAME = "latex-references"
+CATEGORY = "references"
 
 
 def check(folders, config):

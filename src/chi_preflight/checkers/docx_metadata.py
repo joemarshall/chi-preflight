@@ -3,6 +3,7 @@ from docx import Document
 from ..findings import Finding, Level
 
 NAME = "docx-metadata"
+CATEGORY = "metadata"
 
 
 def check(path, config):
